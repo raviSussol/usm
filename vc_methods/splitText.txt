@@ -1,0 +1,36 @@
+  //%attributes = {"lang":"en"} comment added and reserved by 4D.
+  // --------------- split_text ---------------
+  // $1 - (text) - The text to be split
+  // $2 - (text) - The token to split on
+  // $3 - (pointer) - A pointer to an array to append the split text to
+  // $0 - (boolean) - True if successful, False if error
+  // --------------- Description ---------------
+  // Splits a string into substrings based on a delimiting token,
+  // and appends them to an array.
+
+C_TEXT($1;$t_text_to_split;$2;$t_delimiter;$t_substring)
+C_POINTER($3;$p_substrings)
+C_LONGINT($i_start_of_delimeter)
+C_BOOLEAN($0)
+
+$0:=True
+$t_text_to_split:=$1
+$t_delimiter:=$2
+$p_substrings:=$3
+$i_delimiter_length:=Length($t_delimiter)
+
+While (Length($t_text_to_split)>0)
+	$i_start_of_delimeter:=Position($t_delimiter;$t_text_to_split)
+	If ($i_start_of_delimeter=1)  // Delimeter was first, remove it from the remaining text 
+		$t_text_to_split:=Substring($t_text_to_split;$i_start_of_delimeter+$i_delimiter_length)
+	Else 
+		If ($i_start_of_delimeter>0)  // Found delimeter, use string up to delimeter as current characteristic, and remove from string to split
+			$t_substring:=Substring($t_text_to_split;1;$i_start_of_delimeter-1)  // Cut off delimeter
+			$t_text_to_split:=Substring($t_text_to_split;$i_start_of_delimeter+$i_delimiter_length)  // Cut off current substring and delimeter
+		Else   // Didn't find the delimeter, use the remainder as the final substring
+			$t_substring:=$t_text_to_split
+			$t_text_to_split:=""
+		End if 
+		APPEND TO ARRAY($p_substrings->;$t_substring)
+	End if 
+End while 

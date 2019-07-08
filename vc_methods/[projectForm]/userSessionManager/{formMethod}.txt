@@ -1,0 +1,71 @@
+  //%attributes = {"lang":"en"} comment added and reserved by 4D.
+C_LONGINT($pid;$i)
+C_TEXT($stdin;$stdout;$stderr;$tUserSession)
+C_COLLECTION($cUserSessions;$cHeaderList;$cValueList;$cList)
+
+  // Process the output
+Case of 
+	: (Form event=On Load)
+		OBJECT SET ENABLED(*;"objDisconnectButton";False)
+		
+		ARRAY TEXT(atIds;0)
+		ARRAY TEXT(atUsernames;0)
+		ARRAY TEXT(atSessions;0)
+		ARRAY TEXT(atStates;0)
+		ARRAY TEXT(atIdleTimes;0)
+		ARRAY TEXT(atLogonDateTimes;0)
+		
+		SET ENVIRONMENT VARIABLE("_4D_OPTION_HIDE_CONSOLE";"true")  // Hide console window
+		LAUNCH EXTERNAL PROCESS("query user";$stdin;$stdout;$stderr;$pid)  // Gets all information
+		
+		If ($stderr="")
+			$cUserSessions:=Split string($stdout;"\r\n")
+			$cValueList:=New collection
+			
+			For ($i;0;$cUserSessions.length-1)
+				If ($cUserSessions[$i]#"")
+					$iStart:=1
+					$bFound:=True
+					$tUserSession:=$cUserSessions[$i]
+					
+					While ($bFound)
+						$bFound:=Match regex("[ ]{2,}";$tUserSession;1;$pos;$len)
+						
+						If ($bFound)
+							$pos:=$pos+1
+							$len:=$len-1
+							$tUserSession:=Delete string($tUserSession;$pos;$len)
+							$tUserSession:=Insert string($tUserSession;"\r\n";$pos)
+						Else 
+							$tUserSession:=Replace string($tUserSession;" ";"")
+							$tUserSession:=Replace string($tUserSession;">";"")
+						End if 
+						
+					End while 
+					
+					If ($i=0)  // Split header names to collection.
+						$cHeaderList:=Split string($tUserSession;"\r\n")
+					Else 
+						$cValueList.push(Split string($tUserSession;"\r\n"))
+					End if 
+				End if 
+				
+			End for 
+			
+			For each ($cList;$cValueList)
+				APPEND TO ARRAY(atUsernames;$cList[0])
+				APPEND TO ARRAY(atSessions;$cList[1])
+				APPEND TO ARRAY(atIds;$cList[2])
+				APPEND TO ARRAY(atStates;$cList[3])
+				APPEND TO ARRAY(atIdleTimes;$cList[4])
+				APPEND TO ARRAY(atLogonDateTimes;$cList[5])
+				
+			End for each 
+			
+		Else 
+			ALERT($stderr)
+		End if 
+		
+	: (Form event=On Unload)
+		
+End case 

@@ -1,0 +1,48 @@
+//%attributes = {"shared":true,"executedOnServer":true,"lang":"en"} comment added and reserved by 4D.
+// Gets last commit from "git log" and writes it into vc_matching_commit_hash
+
+C_TEXT($t_method_path;$t_method_contents;$output;$error;$last_commit_sha;$t_last_written_hash;$t_method_after_hash)
+C_LONGINT($i_error;$i_start_of_hash;$i_length_of_hash)
+$t_method_path:="vc_matching_commit_sha"
+$t_method_contents:=""
+
+// Get the last commit sha1 hash
+VC_GIT_EXEC_CMD ("log";"--oneline -n1 --format=%H";->$output;->$error)
+
+If (VC_GIT_OK=0)// Something went wrong with git
+UTIL_Alert (VC_GIT_ERR_MSG)
+$0:=50
+
+Else 
+$last_commit_sha:=VC_GIT_LAST_COMMIT_SHA
+
+UTIL_ERR_HandlerInstall 
+METHOD GET CODE($t_method_path;$t_method_contents;*)
+$i_error:=UTIL_ERR_HandlerRemove 
+If ($i_error#0)// Method doesn't exist, create it
+$t_method_contents:="//%attributes = {\"lang\":\"en\",\"folder\":\"Plugins\"} comment added and reserved by 4D.\n"
+$t_method_contents:=$t_method_contents+"// --------- vc_matching_commit_sha ----------\n"
+$t_method_contents:=$t_method_contents+"// No Parameters: Do not call this method\n"
+$t_method_contents:=$t_method_contents+"// --------------- Description ---------------\n"
+$t_method_contents:=$t_method_contents+"// This method is used as a storage mechanism to\n"
+$t_method_contents:=$t_method_contents+"// keep the 4D structure in sync with Git.\n"
+$t_method_contents:=$t_method_contents+"// It should not be run.\n"
+$t_method_contents:=$t_method_contents+"\n// ["+$last_commit_sha+"]\n"
+Else // Method exists, append last commit to the top
+// Check if the commit we're about to write is already the last written
+$i_start_of_hash:=Position("[";$t_method_contents)+1
+$i_length_of_hash:=Position("]";$t_method_contents)-$i_start_of_hash
+$t_last_written_hash:=Substring($t_method_contents;$i_start_of_hash;$i_length_of_hash)
+
+If ($last_commit_sha=$t_last_written_hash)// This commit hashcode is already the last written, don't write it again
+VC_GIT_OK:=1
+Else // Current commit not the last written, add it to the method
+$t_method_after_hash:=Substring($t_method_contents;$i_start_of_hash)
+$t_method_contents:=Substring($t_method_contents;1;$i_start_of_hash-1)+$last_commit_sha+"]\n// ["+$t_method_after_hash
+VC_GIT_OK:=1
+End if 
+
+End if 
+METHOD SET CODE($t_method_path;$t_method_contents;*)
+
+End if 

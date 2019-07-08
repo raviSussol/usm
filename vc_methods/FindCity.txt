@@ -1,0 +1,37 @@
+  //%attributes = {"lang":"en"} comment added and reserved by 4D.
+C_LONGINT($0)
+C_LONGINT($result_l)
+
+C_TEXT($in;$out;$err)
+C_TEXT($regSearch_t)
+C_TEXT($regexPat_t)
+C_LONGINT($pos_l)
+C_LONGINT($foundPos_l)
+C_LONGINT($length_l)
+C_BOOLEAN($found_b)
+ARRAY TEXT($resultLines_at;0)
+ARRAY TEXT($locations_at;0)
+
+$in:=""
+SET ENVIRONMENT VARIABLE("_4D_OPTION_HIDE_CONSOLE";"True")
+$regSearch_t:="REG QUERY \"HKCU\\Control Panel\\Desktop\" /vLogPixels /s"
+LAUNCH EXTERNAL PROCESS($regSearch_t;$in;$out;$err)
+
+If (Match regex("ERROR";$out;1)=False)
+	$regexPat_t:=" LogPixels REG_DWORD "
+	$pos_l:=1
+	$found_b:=Match regex($regexPat_t;$out;1;$foundPos_l;$length_l)
+	
+	If ($found_b=True)
+		$regexPat_t:="0x\\d+"
+		$found_b:=Match regex($regexPat_t;$out;1;$foundPos_l;$length_l)
+		EXECUTE FORMULA("$result_l:="+Substring($out;$foundPos_l;$length_l))
+	Else 
+		$result_l:=-1
+	End if 
+	
+Else 
+	$result_l:=-1
+End if 
+
+$0:=$result_l

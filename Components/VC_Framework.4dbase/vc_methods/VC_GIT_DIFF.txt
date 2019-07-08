@@ -1,0 +1,47 @@
+//%attributes = {"shared":true,"executedOnServer":true,"lang":"en"} comment added and reserved by 4D.
+// method checks difference between inside 4D methods and version controlled methods 
+// for new changes 
+// and returns modified unimported version controlled methods
+
+
+C_TEXT($output;$rest_of_output;$error;$path;$filename;$last_commit_sha;$first_commit_sha)
+// declare zero sized array of files
+ARRAY TEXT($files;0)
+
+$last_commit_sha:=VC_GIT_GET_LAST_COMMIT_SHA 
+
+If ($last_commit_sha="")
+// no last commit imported so just check from first commit
+//UTIL_Alert("No last commit imported found in file 'last_imported_commit_sha,git'. Finding First Commit SHA")
+VC_GIT_FIRST_COMMIT 
+$first_commit_sha:=VC_GIT_FIRST_COMMIT_SHA
+//UTIL_Alert("First Commit SHA : "+$first_commit_sha)
+//UTIL_Alert("Executing : git diff --name-only HEAD "+$first_commit_sha)
+VC_GIT_EXEC_CMD ("diff";"--name-only HEAD "+$first_commit_sha+" ";->$output;->$error)
+
+
+Else 
+// found last commit imported, import the difference between HEAD and that commit
+// execute diff
+
+//UTIL_Alert("last commit imported found Executing : git diff --name-only HEAD "+$last_commit_sha)
+VC_GIT_EXEC_CMD ("diff";"--name-only HEAD "+$last_commit_sha+" ";->$output;->$error)
+
+End if 
+
+// if it went wrong with git command
+If (VC_GIT_OK=0)
+UTIL_Alert ("Error found at VC_GIT_EXEC_CMD called at VC_GIT_DIFF : "+$error)
+$0:=""
+
+Else // empty
+If ($output="")
+UTIL_Alert ("No difference between the last commit on your local history and inside 4D Code.")
+
+Else 
+VC_GIT_OK:=1
+
+End if 
+$0:=$output
+
+End if 

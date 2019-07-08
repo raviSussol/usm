@@ -1,0 +1,21 @@
+  //%attributes = {"lang":"en"} comment added and reserved by 4D.
+C_LONGINT($iSelectedUser;$iPid)
+
+$iSelectedUser:=Find in array(userSessionManagerListBox;True)
+If ($iSelectedUser#-1)
+	CONFIRM("WARNING: Are you sure you want to disconnect the selected user(s)?")
+	If (OK=1)
+		If (isCurrentLoggedUser (atUsernames{$iSelectedUser}))
+			$iPid:=New process("logoffUserBySession";(128*1028);"logoffUserInNewProcess";atIds{$iSelectedUser})
+		Else 
+			logoffUserBySession (atIds{$iSelectedUser})  // Logs off the selected user with provided sessinn id.
+		End if 
+		
+		QUIT 4D
+	Else 
+		CANCEL
+	End if 
+	
+Else 
+	ALERT("You must select a user first to disconnect")
+End if 

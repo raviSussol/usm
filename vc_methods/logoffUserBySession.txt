@@ -1,0 +1,13 @@
+  //%attributes = {"lang":"en"} comment added and reserved by 4D.
+C_LONGINT($pid)
+C_TEXT($stdin;$stdout;$stderr;$1;$tCommand)
+C_COLLECTION($cStdOutput)
+
+$tCommand:="logoff "+$1
+
+SET ENVIRONMENT VARIABLE("_4D_OPTION_HIDE_CONSOLE";"true")  // Hide console window
+LAUNCH EXTERNAL PROCESS($tCommand;$stdin;$stdout;$stderr;$pid)  // Gets all information
+
+If ($stderr#"")
+	ALERT($stderr)
+End if 

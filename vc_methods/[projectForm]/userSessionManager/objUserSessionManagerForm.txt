@@ -1,0 +1,12 @@
+  //%attributes = {"lang":"en"} comment added and reserved by 4D.
+C_BOOLEAN($bIsEnabled)
+$bIsEnabled:=False
+
+Case of 
+	: (Form event=On Clicked)
+		If (Find in array(userSessionManagerListBox;True)#-1)
+			$bIsEnabled:=True
+		End if 
+		
+		OBJECT SET ENABLED(*;"objDisconnectButton";$bIsEnabled)
+End case 

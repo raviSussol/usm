@@ -1,0 +1,2 @@
+//%attributes = {"shared":true,"executedOnServer":true,"lang":"en"} comment added and reserved by 4D.
+<>VC_alerts_on:=True

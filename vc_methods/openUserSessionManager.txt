@@ -1,0 +1,7 @@
+  //%attributes = {"lang":"en"} comment added and reserved by 4D.
+C_LONGINT($winRef)
+
+$winRef:=Open form window("userSessionManager";Plain form window;Horizontally centered;Vertically centered)
+
+DIALOG("userSessionManager")
+CLOSE WINDOW($winRef)

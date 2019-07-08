@@ -1,0 +1,27 @@
+  //%attributes = {"lang":"en"} comment added and reserved by 4D.
+C_BOOLEAN($0;$isCurrLoggedInUser)
+C_TEXT($1;$tCurrLoggedInUser)
+
+C_LONGINT($pid)
+C_TEXT($stdin;$stdout;$stderr)
+
+C_COLLECTION($cStdOutput)
+
+$isCurrLoggedInUser:=False
+
+SET ENVIRONMENT VARIABLE("_4D_OPTION_HIDE_CONSOLE";"true")  // Hide console window
+LAUNCH EXTERNAL PROCESS("whoami";$stdin;$stdout;$stderr;$pid)  // Gets all information
+
+$stdout:=Replace string($stdout;"\r\n";"")
+
+If ($stderr="")
+	$cStdOutput:=Split string($stdout;"\\")
+	If ($cStdOutput[1]=$1)
+		$isCurrLoggedInUser:=True
+	Else 
+		$isCurrLoggedInUser:=False
+	End if 
+Else 
+	ALERT($stderr)
+End if 
+$0:=$isCurrLoggedInUser

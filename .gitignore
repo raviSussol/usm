@@ -1,0 +1,21 @@
+Logs/**/*
+Preferences/**/*
+Folder_Reports/**/*
+Documents/temp/*
+temporary\ files/**/*
+/*.4DB
+/*.4DIndy
+*.4DD
+*.4BK
+*.4BL
+*.4DIndx
+*.4DB_errors.xml
+/*.Match
+/*.journal
+vc_data/*
+last_imported_commit_sha.git
+*.DS_Store
+# Ignore last_import_commit_sha so everyone tracks their own import status
+vc_methods/vc_matching_commit_sha.txt
+# Ignore file history
+.history/

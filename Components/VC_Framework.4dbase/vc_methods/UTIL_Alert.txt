@@ -1,0 +1,13 @@
+//%attributes = {"lang":"en"} comment added and reserved by 4D.
+// --[HEADERSTART]-------------------------------------
+// User name (OS): Edwin Monk-Fromont
+// Date and time: 08/12/15, 4:15 pm
+// ----------------------------------------------------
+// Description:
+//   Produce alert window, unless alerts are turned off.
+// --[HEADEREND]---------------------------------------
+
+C_TEXT($1)
+If (<>VC_alerts_on)
+ALERT($1)
+End if 
