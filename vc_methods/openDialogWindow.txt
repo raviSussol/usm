@@ -1,0 +1,10 @@
+  //%attributes = {"lang":"en"} comment added and reserved by 4D.
+C_LONGINT($winRef)
+C_TEXT($1;$tWindowTitle;$2;tAlertText;$3;tAlertType)
+
+tAlertText:=$2
+tAlertType:=$3
+$winRef:=Open form window("alertWindow";Movable form dialog box;Horizontally centered;Vertically centered)
+SET WINDOW TITLE($tWindowTitle;$winRef)
+DIALOG("alertWindow")
+CLOSE WINDOW($winRef)

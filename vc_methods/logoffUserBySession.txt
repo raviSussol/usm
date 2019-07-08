@@ -9,5 +9,5 @@ SET ENVIRONMENT VARIABLE("_4D_OPTION_HIDE_CONSOLE";"true")  // Hide console wind
 LAUNCH EXTERNAL PROCESS($tCommand;$stdin;$stdout;$stderr;$pid)  // Gets all information
 
 If ($stderr#"")
-	ALERT($stderr)
+	openDialogWindow ("Alert";$stderr;"alert")
 End if 

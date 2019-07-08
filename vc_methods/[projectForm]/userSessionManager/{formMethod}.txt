@@ -63,7 +63,7 @@ Case of
 			End for each 
 			
 		Else 
-			ALERT($stderr)
+			openDialogWindow ("Alert";$stderr;"alert")
 		End if 
 		
 	: (Form event=On Unload)

@@ -3,7 +3,7 @@ C_LONGINT($iSelectedUser;$iPid)
 
 $iSelectedUser:=Find in array(userSessionManagerListBox;True)
 If ($iSelectedUser#-1)
-	CONFIRM("WARNING: Are you sure you want to disconnect the selected user(s)?")
+	openDialogWindow ("Confirm";"WARNING: Are you sure you want to disconnect the selected user(s)?";"confirm")
 	If (OK=1)
 		If (isCurrentLoggedUser (atUsernames{$iSelectedUser}))
 			$iPid:=New process("logoffUserBySession";(128*1028);"logoffUserInNewProcess";atIds{$iSelectedUser})
@@ -12,10 +12,8 @@ If ($iSelectedUser#-1)
 		End if 
 		
 		QUIT 4D
-	Else 
-		CANCEL
 	End if 
 	
 Else 
-	ALERT("You must select a user first to disconnect")
+	openDialogWindow ("Alert";"You must select a user first to disconnect";"alert")
 End if 

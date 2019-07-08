@@ -22,6 +22,6 @@ If ($stderr="")
 		$isCurrLoggedInUser:=False
 	End if 
 Else 
-	ALERT($stderr)
+	openDialogWindow ("Alert";$stderr;"alert")
 End if 
 $0:=$isCurrLoggedInUser

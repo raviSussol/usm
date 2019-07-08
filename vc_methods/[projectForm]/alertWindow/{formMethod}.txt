@@ -1,0 +1,16 @@
+  //%attributes = {"lang":"en"} comment added and reserved by 4D.
+C_TEXT(t_alert_text_display)
+
+t_alert_text_display:=tAlertText
+
+Case of 
+	: (Form event=On Load)
+		If (tAlertType="alert")
+			
+			OBJECT SET VISIBLE(*;"objSecondaryButton";False)
+			OBJECT SET TITLE(*;"objDefaultButton";"Yes")
+			
+		End if 
+		
+		
+End case 

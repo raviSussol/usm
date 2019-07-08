@@ -1,7 +1,7 @@
   //%attributes = {"lang":"en"} comment added and reserved by 4D.
 C_LONGINT($winRef)
 
-$winRef:=Open form window("userSessionManager";Plain form window;Horizontally centered;Vertically centered)
-
+$winRef:=Open form window("userSessionManager";Movable form dialog box;Horizontally centered;Vertically centered)
+SET WINDOW TITLE("User session manager";$winRef)
 DIALOG("userSessionManager")
 CLOSE WINDOW($winRef)
